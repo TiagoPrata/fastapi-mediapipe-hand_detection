@@ -1,6 +1,3 @@
-# https://www.youtube.com/watch?v=NZde8Xt78Iw
-# https://www.youtube.com/watch?v=9iEPzbG-xLE
-
 from fastapi import FastAPI
 import uvicorn
 from pydantic import BaseModel
@@ -35,13 +32,6 @@ def find_thumb_and_index(d:InputImg):
     hd.process_hands(d.img_base64str)
     hd.find_hands()
     hd.find_thumb_and_index()
-    hd.line_between_thumb_and_index()
-    if hd.get_arrow_length() != None:
-        if hd.get_arrow_length() < 60:
-            hd.draw_circle_in_the_arrow((0, 255, 0))
-        else:
-            hd.draw_circle_in_the_arrow()
-    hd.calc_arrow_angle()
 
     return hd.processed_img()
 
@@ -69,7 +59,7 @@ def get_angle(d:InputImg):
     return hd.processed_img()
 
 @app.post("/get_angle/")
-def get_angle(d:InputImg):
+def get_angle(d:InputImg, printAngle: bool = False):
     hd.process_hands(d.img_base64str)
     hd.find_hands()
     hd.find_thumb_and_index()
@@ -81,7 +71,9 @@ def get_angle(d:InputImg):
             hd.draw_circle_in_the_arrow()
             hd.calc_arrow_angle()
             
-    hd.putText(str(hd.angle), (10,50), 2)
+    if printAngle:
+        hd.putText(str(hd.angle), (10,50), 2)
+
     return hd.processed_img()
 
 @app.post("/get_angle_value/")
